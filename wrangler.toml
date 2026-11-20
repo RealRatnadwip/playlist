@@ -1,0 +1,24 @@
+name = "playlist-ratnadwip-com"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+SITE_URL = "https://playlist.ratnadwip.com"
+SPOTIFY_CLIENT_ID = "replace-with-spotify-client-id"
+SPOTIFY_REDIRECT_URI = "https://playlist.ratnadwip.com/api/admin/spotify/callback"
+
+# Cloudflare D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "playlist_db"
+database_id = "replace-with-d1-database-uuid"
+migrations_dir = "migrations"
+
+# Optional Cloudflare R2 Bucket for custom playlist artwork uploads
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "playlist-media"
+
