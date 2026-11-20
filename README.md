@@ -24,4 +24,4 @@ Music has always been an emotional anchor. This website is simply the shelf wher
 
 For complete, step-by-step instructions on setting up, configuring Spotify OAuth, and deploying this project to Cloudflare Pages and D1, please refer to:
 
-👉 **[DEPLOYMENT.md](DEPLOYMENT.md)**
+**[DEPLOYMENT.md](DEPLOYMENT.md)**

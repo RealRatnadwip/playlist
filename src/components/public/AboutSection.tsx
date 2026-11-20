@@ -19,8 +19,8 @@ No algorithms. No shuffle recommendations. Just the songs I return to when the w
   const paragraphs = bodyText.split('\n\n').filter((p) => p.trim().length > 0);
 
   return (
-    <section id="about" className="max-w-5xl xl:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 my-20 sm:my-28">
-      <div className="relative rounded-3xl glass-panel p-8 sm:p-12 md:p-14 border border-white/10 shadow-glass overflow-hidden">
+    <section id="about" className="max-w-5xl xl:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 my-16 sm:my-28">
+      <div className="relative rounded-2xl sm:rounded-3xl glass-panel p-5 sm:p-10 md:p-14 border border-white/10 shadow-glass overflow-hidden">
         {/* Subtle accent corner glow */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
 

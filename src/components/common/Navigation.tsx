@@ -7,11 +7,34 @@ import { Menu, X, Disc3 } from 'lucide-react';
 interface NavigationProps {
   currentView?: string;
   onNavigate?: (view: string) => void;
+  hideOnTop?: boolean;
 }
 
-export const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
+export const Navigation: React.FC<NavigationProps> = ({ onNavigate, hideOnTop = false }) => {
   const { nowPlaying } = useNowPlayingContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(!hideOnTop);
+
+  React.useEffect(() => {
+    if (!hideOnTop) {
+      setIsScrolled(true);
+      return;
+    }
+
+    const checkScroll = () => {
+      // Reveal navbar as hero transitions toward card, hide cleanly when near top
+      const scrollY = window.scrollY;
+      if (!isScrolled && scrollY > 80) {
+        setIsScrolled(true);
+      } else if (isScrolled && scrollY < 25) {
+        setIsScrolled(false);
+      }
+    };
+
+    checkScroll();
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    return () => window.removeEventListener('scroll', checkScroll);
+  }, [hideOnTop, isScrolled]);
 
   const handleNavClick = (anchor: string) => {
     setMobileMenuOpen(false);
@@ -28,9 +51,15 @@ export const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 transition-all">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-4 transition-all duration-500 ease-out ${
+        isScrolled
+          ? 'translate-y-0 opacity-100 pointer-events-auto'
+          : '-translate-y-full opacity-0 pointer-events-none'
+      }`}
+    >
       <div className="max-w-6xl xl:max-w-7xl mx-auto">
-        <nav className="glass-panel rounded-full px-5 py-2.5 sm:py-3 flex items-center justify-between shadow-glass">
+        <nav className="glass-panel rounded-full px-3.5 sm:px-5 py-2 sm:py-3 flex items-center justify-between shadow-glass">
           {/* Brand / Wordmark */}
           <a
             href="/"
@@ -40,16 +69,16 @@ export const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            className="flex items-center gap-3 group focus:outline-none"
+            className="flex items-center gap-2 sm:gap-3 group focus:outline-none"
           >
-            <div className="w-7 h-7 rounded-full bg-accent/15 border border-accent/30 flex items-center justify-center text-accent group-hover:scale-105 transition-transform">
-              <Disc3 className={`w-4 h-4 ${nowPlaying?.isPlaying ? 'animate-spin' : ''}`} style={{ animationDuration: '4s' }} />
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-accent/15 border border-accent/30 flex items-center justify-center text-accent group-hover:scale-105 transition-transform flex-shrink-0">
+              <Disc3 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${nowPlaying?.isPlaying ? 'animate-spin' : ''}`} style={{ animationDuration: '4s' }} />
             </div>
             <div className="flex flex-col">
-              <span className="font-display text-xl sm:text-2xl font-bold tracking-tight text-primary leading-none group-hover:text-accent transition-colors">
+              <span className="font-display text-lg sm:text-2xl font-bold tracking-tight text-primary leading-none group-hover:text-accent transition-colors">
                 ratnadwip.
               </span>
-              <span className="text-[9px] tracking-widest text-secondary font-mono uppercase leading-tight mt-0.5">
+              <span className="text-[8px] sm:text-[9px] tracking-widest text-secondary font-mono uppercase leading-tight mt-0.5 hidden xs:inline">
                 PERSONAL MUSIC ARCHIVE
               </span>
             </div>

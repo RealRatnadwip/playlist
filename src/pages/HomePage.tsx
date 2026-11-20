@@ -46,8 +46,8 @@ export const HomePage: React.FC = () => {
         description="A personal music archive, listening journal and playlist collection belonging to Ratnadwip Sarkar. Real-time listening status, curated playlists, and the stories behind them."
       />
 
-      {/* Floating Header */}
-      <Navigation />
+      {/* Floating Header (Hidden on top full-page hero, reveals smoothly on scroll) */}
+      <Navigation hideOnTop={true} />
 
       {/* Main Public Content */}
       <main>

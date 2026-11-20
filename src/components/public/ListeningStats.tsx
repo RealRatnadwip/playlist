@@ -45,28 +45,26 @@ export const ListeningStats: React.FC<ListeningStatsProps> = ({ stats, isLoading
   ];
 
   return (
-    <section className="max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8 sm:my-12">
-      <div className="glass-panel rounded-2xl p-5 sm:p-6 border border-white/10 shadow-glass">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-y md:divide-y-0 md:divide-x divide-white/10">
+    <section id="stats" className="max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8 sm:my-12">
+      <div className="glass-panel rounded-2xl p-4 sm:p-6 border border-white/10 shadow-glass">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {items.map((item, idx) => {
             const Icon = item.icon;
             return (
               <div
                 key={idx}
-                className={`flex flex-col items-center md:items-start text-center md:text-left ${
-                  idx > 0 ? 'pt-4 md:pt-0 md:pl-6' : ''
-                }`}
+                className="p-3 sm:p-4 rounded-xl bg-white/[0.03] border border-white/5 flex flex-col items-center sm:items-start text-center sm:text-left"
               >
-                <div className="flex items-center gap-2 text-secondary mb-1">
-                  <Icon className="w-3.5 h-3.5 text-accent/80" />
-                  <span className="text-xs font-mono tracking-wider uppercase">
+                <div className="flex items-center gap-1.5 sm:gap-2 text-secondary mb-1">
+                  <Icon className="w-3.5 h-3.5 text-accent/80 flex-shrink-0" />
+                  <span className="text-[10px] sm:text-xs font-mono tracking-wider uppercase">
                     {item.label}
                   </span>
                 </div>
-                <div className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-primary">
+                <div className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-primary">
                   {item.value}
                 </div>
-                <span className="text-xs text-secondary/70 font-sans mt-0.5">
+                <span className="text-[10px] sm:text-xs text-secondary/70 font-sans mt-0.5">
                   {item.detail}
                 </span>
               </div>

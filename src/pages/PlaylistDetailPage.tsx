@@ -92,23 +92,24 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({ slug }) 
         {/* Content Section: 2-Column on Wide Screens, Stacked on Mobile */}
         <div className="max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
           {playlist.story_content ? (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
               {/* Left Column: The Editorial Story */}
-              <div className="lg:col-span-7 xl:col-span-7">
+              <div className="lg:col-span-7 xl:col-span-7 flex flex-col">
                 <PlaylistStory
                   storyContent={playlist.story_content}
                   playlistTitle={playlist.title}
+                  className="h-full"
                 />
               </div>
 
-              {/* Right Column: The Tracklist (sticky on desktop) */}
-              <div className="lg:col-span-5 xl:col-span-5 lg:sticky lg:top-24">
-                <TrackList tracks={playlist.tracks} />
+              {/* Right Column: The Tracklist (matching story height on desktop with internal scroll) */}
+              <div className="lg:col-span-5 xl:col-span-5 flex flex-col min-h-[460px] lg:min-h-0">
+                <TrackList tracks={playlist.tracks} className="h-full max-h-[550px] lg:max-h-none" />
               </div>
             </div>
           ) : (
             <div className="max-w-4xl mx-auto">
-              <TrackList tracks={playlist.tracks} />
+              <TrackList tracks={playlist.tracks} className="max-h-[640px]" />
             </div>
           )}
 
