@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Playlist } from '../types';
 import { fetchPlaylistBySlug, recordVisit } from '../services/api';
 import { Navigation } from '../components/common/Navigation';
@@ -17,6 +17,40 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({ slug }) 
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+
+  // Measure Story natural height so Tracklist can match it strictly without expanding the Story
+  const storyRef = useRef<HTMLDivElement>(null);
+  const [storyHeight, setStoryHeight] = useState<number | undefined>(undefined);
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+      if (storyRef.current) {
+        setStoryHeight(storyRef.current.offsetHeight);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    let observer: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && storyRef.current) {
+      observer = new ResizeObserver(() => {
+        if (storyRef.current) {
+          setStoryHeight(storyRef.current.offsetHeight);
+        }
+      });
+      observer.observe(storyRef.current);
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (observer) observer.disconnect();
+    };
+  }, [playlist?.story_content]);
 
   useEffect(() => {
     async function loadPlaylist() {
@@ -92,19 +126,26 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({ slug }) 
         {/* Content Section: 2-Column on Wide Screens, Stacked on Mobile */}
         <div className="max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
           {playlist.story_content ? (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
-              {/* Left Column: The Editorial Story */}
-              <div className="lg:col-span-7 xl:col-span-7 flex flex-col">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+              {/* Left Column: The Editorial Story (Dictates its own original natural height) */}
+              <div ref={storyRef} className="lg:col-span-7 xl:col-span-7">
                 <PlaylistStory
                   storyContent={playlist.story_content}
                   playlistTitle={playlist.title}
-                  className="h-full"
                 />
               </div>
 
-              {/* Right Column: The Tracklist (matching story height on desktop with internal scroll) */}
-              <div className="lg:col-span-5 xl:col-span-5 flex flex-col min-h-[460px] lg:min-h-0">
-                <TrackList tracks={playlist.tracks} className="h-full max-h-[550px] lg:max-h-none" />
+              {/* Right Column: The Tracklist (Strictly follows Story's height with internal scroll) */}
+              <div
+                className="lg:col-span-5 xl:col-span-5 w-full"
+                style={{
+                  height: isDesktop && storyHeight ? `${storyHeight}px` : undefined,
+                }}
+              >
+                <TrackList
+                  tracks={playlist.tracks}
+                  className="h-full max-h-[520px] lg:max-h-none"
+                />
               </div>
             </div>
           ) : (
