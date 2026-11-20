@@ -51,26 +51,35 @@ export const NowPlayingHero: React.FC = () => {
         </div>
 
         {/* Main Currently Playing Card */}
-        <div className="relative rounded-3xl glass-panel-elevated p-6 sm:p-8 md:p-10 border border-white/10 shadow-glass-lg backdrop-blur-2xl transition-all duration-500 overflow-hidden group">
+        <div className="relative rounded-3xl glass-panel-elevated p-6 sm:p-8 md:p-10 border border-white/15 shadow-glass-lg backdrop-blur-2xl transition-all duration-500 overflow-hidden group">
           {/* Ambient blurred album artwork background layer */}
           {artwork && (
             <div
-              className="absolute inset-0 bg-cover bg-center opacity-10 filter blur-3xl scale-110 pointer-events-none transition-opacity duration-1000"
+              key={`bg-${artwork}`}
+              className="absolute inset-0 bg-cover bg-center opacity-30 filter blur-3xl scale-110 pointer-events-none transition-opacity duration-700 animate-fade-in"
               style={{ backgroundImage: `url(${artwork})` }}
             />
           )}
 
+          {/* Contrast-recovery dark gradient scrim & backdrop:
+              Preserves the rich colorful glass refraction along borders while
+              establishing a deep, velvety dark foundation behind text for maximum legibility */}
+          <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/85 via-black/70 to-black/40 pointer-events-none" />
+          <div className="absolute inset-0 bg-[#121212]/40 backdrop-blur-md pointer-events-none" />
+
           <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 lg:gap-10">
             {/* Album Artwork as prominent visual anchor */}
             <div className="relative flex-shrink-0">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-2xl border border-white/15 bg-surface relative group/art">
+              <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-2xl border border-white/20 bg-surface relative group/art">
                 {artwork ? (
                   <img
+                    key={artwork}
                     src={artwork}
                     alt={title ? `${title} by ${artist}` : 'Album Artwork'}
-                    className={`w-full h-full object-cover transition-transform duration-700 ease-out ${
-                      isPlaying ? 'group-hover/art:scale-105' : 'grayscale-[25%]'
-                    }`}
+                    loading="eager"
+                    decoding="async"
+                    className={`w-full h-full object-cover transition-transform duration-700 ease-out animate-fade-in ${isPlaying ? 'group-hover/art:scale-105' : 'grayscale-[25%]'
+                      }`}
                   />
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center bg-surface-elevated text-secondary/50">
@@ -97,8 +106,8 @@ export const NowPlayingHero: React.FC = () => {
               <div>
                 {/* Status message */}
                 {!isPlaying && (
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-secondary mb-3">
-                    <Radio className="w-3.5 h-3.5 text-secondary/70" />
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-xs font-mono text-neutral-200 mb-3 shadow-sm">
+                    <Radio className="w-3.5 h-3.5 text-accent" />
                     <span>
                       {nowPlaying?.message ||
                         (isRecent
@@ -109,26 +118,32 @@ export const NowPlayingHero: React.FC = () => {
                 )}
 
                 {/* Song Title */}
-                <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-primary leading-[1.05] line-clamp-2 mt-1">
+                <h1
+                  key={title || 'quiet-title'}
+                  className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.05] line-clamp-2 mt-1 drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] animate-fade-in"
+                >
                   {title || 'Quiet Hours'}
                 </h1>
 
                 {/* Artist & Album */}
-                <p className="text-lg sm:text-xl text-primary/80 font-medium mt-2 flex flex-wrap items-center justify-center md:justify-start gap-2">
-                  <span>{artist || 'Ratnadwip Sarkar'}</span>
+                <p
+                  key={`${artist || 'artist'}-${album || 'album'}`}
+                  className="text-lg sm:text-xl text-white/95 font-medium mt-2 flex flex-wrap items-center justify-center md:justify-start gap-2 drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)] animate-fade-in"
+                >
+                  <span className="text-white font-semibold">{artist || 'Ratnadwip Sarkar'}</span>
                   {album && (
                     <>
-                      <span className="text-secondary/40 font-light">·</span>
-                      <span className="text-secondary font-normal">{album}</span>
+                      <span className="text-white/40 font-light">·</span>
+                      <span className="text-white/80 font-normal">{album}</span>
                     </>
                   )}
                 </p>
 
                 {/* Warm intimate note */}
-                <p className="text-secondary/80 text-sm sm:text-base mt-4 leading-relaxed max-w-xl">
+                <p className="text-neutral-200/90 text-sm sm:text-base mt-4 leading-relaxed max-w-xl drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] font-normal">
                   {isPlaying
-                    ? 'Connected live to Spotify. Sound resonates through the speakers in real-time as I work, write, or think.'
-                    : 'Currently away from the turntable. The speakers are quiet, but the archive below is always open.'}
+                    ? 'Maybe locked in deep in work or lost in music.'
+                    : 'Currently the speakers are quiet, but the archive below is always open.'}
                 </p>
               </div>
 
@@ -149,7 +164,7 @@ export const NowPlayingHero: React.FC = () => {
                     href="https://open.spotify.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-white/10 text-primary font-medium text-sm hover:bg-white/15 transition-all"
+                    className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-black/50 border border-white/15 text-white font-medium text-sm hover:bg-black/70 transition-all backdrop-blur-md"
                   >
                     <span>Visit Spotify Profile</span>
                     <ExternalLink className="w-4 h-4 stroke-[2]" />
@@ -158,7 +173,7 @@ export const NowPlayingHero: React.FC = () => {
 
                 <a
                   href="#playlists"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white/5 border border-white/10 text-primary/90 hover:text-primary hover:bg-white/10 text-sm font-medium transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-black/40 hover:bg-black/60 border border-white/15 text-white text-sm font-medium transition-all backdrop-blur-md shadow-sm"
                 >
                   <span>Explore Playlists</span>
                   <span className="text-accent text-xs">↓</span>
