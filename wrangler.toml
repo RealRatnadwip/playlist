@@ -12,7 +12,7 @@ SITE_URL = "https://playlist.ratnadwip.com"
 [[d1_databases]]
 binding = "DB"
 database_name = "playlist_db"
-database_id = "replace-with-d1-database-uuid"
+database_id = "f06235aa-ed84-4bc9-afc0-3a7905cc1363"
 migrations_dir = "migrations"
 
 # Optional Cloudflare R2 Bucket for custom playlist artwork uploads
