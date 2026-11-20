@@ -9,7 +9,13 @@ const API_BASE = '/api';
 
 export async function fetchNowPlaying(): Promise<NowPlaying> {
   try {
-    const res = await fetch(`${API_BASE}/spotify/now-playing`);
+    const res = await fetch(`${API_BASE}/spotify/now-playing?_t=${Date.now()}`, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+      },
+    });
     if (res.ok) {
       return await res.json();
     }
@@ -84,6 +90,14 @@ export async function fetchPublicSettings(): Promise<SiteSettings> {
 
 export async function recordVisit(playlistId?: string): Promise<void> {
   try {
+    if (typeof window !== 'undefined') {
+      const key = `pv_${playlistId || 'root'}`;
+      if (sessionStorage.getItem(key)) {
+        return; // Debounced: 1 write per session per page
+      }
+      sessionStorage.setItem(key, '1');
+    }
+
     await fetch(`${API_BASE}/analytics/visit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

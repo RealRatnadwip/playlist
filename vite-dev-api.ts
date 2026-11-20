@@ -174,6 +174,8 @@ export function viteDevApiPlugin(): Plugin {
           res.statusCode = statusCode;
           res.setHeader('Content-Type', 'application/json');
           res.setHeader('Access-Control-Allow-Origin', '*');
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          res.setHeader('Pragma', 'no-cache');
           res.end(JSON.stringify(data));
         };
 

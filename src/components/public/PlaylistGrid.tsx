@@ -54,7 +54,7 @@ export const PlaylistGrid: React.FC<PlaylistGridProps> = ({ playlists, isLoading
   }, [playlists, selectedTag, sortBy]);
 
   return (
-    <section id="playlists" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    <section id="playlists" className="max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-white/10">
         <div>

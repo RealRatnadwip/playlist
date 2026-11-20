@@ -19,8 +19,8 @@ No algorithms. No shuffle recommendations. Just the songs I return to when the w
   const paragraphs = bodyText.split('\n\n').filter((p) => p.trim().length > 0);
 
   return (
-    <section id="about" className="max-w-4xl mx-auto px-4 sm:px-6 my-20 sm:my-28">
-      <div className="relative rounded-3xl glass-panel p-8 sm:p-12 md:p-16 border border-white/10 shadow-glass overflow-hidden">
+    <section id="about" className="max-w-5xl xl:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 my-20 sm:my-28">
+      <div className="relative rounded-3xl glass-panel p-8 sm:p-12 md:p-14 border border-white/10 shadow-glass overflow-hidden">
         {/* Subtle accent corner glow */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -30,11 +30,11 @@ No algorithms. No shuffle recommendations. Just the songs I return to when the w
             <span>Personal Note</span>
           </div>
 
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-primary mb-8 leading-tight">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-primary mb-6 leading-tight">
             {heading}
           </h2>
 
-          <div className="space-y-6 text-primary/80 text-base sm:text-lg leading-relaxed font-light">
+          <div className="space-y-4 sm:space-y-5 text-primary/85 text-sm sm:text-base leading-[1.8] font-normal">
             {paragraphs.map((p, idx) => (
               <p key={idx}>{p}</p>
             ))}

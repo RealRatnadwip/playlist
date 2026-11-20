@@ -6,7 +6,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="mt-24 border-t border-white/5 py-12 px-4 sm:px-6 lg:px-8 text-secondary text-sm">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="max-w-6xl xl:max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Left: Signature & Note */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left">
           <p className="text-primary/90 font-medium">

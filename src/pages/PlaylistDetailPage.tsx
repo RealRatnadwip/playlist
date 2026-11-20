@@ -89,35 +89,50 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({ slug }) 
         {/* Editorial Playlist Header */}
         <PlaylistHeader playlist={playlist} />
 
-        {/* The Story & Listening Journal */}
-        <PlaylistStory
-          storyContent={playlist.story_content}
-          playlistTitle={playlist.title}
-        />
+        {/* Content Section: 2-Column on Wide Screens, Stacked on Mobile */}
+        <div className="max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
+          {playlist.story_content ? (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+              {/* Left Column: The Editorial Story */}
+              <div className="lg:col-span-7 xl:col-span-7">
+                <PlaylistStory
+                  storyContent={playlist.story_content}
+                  playlistTitle={playlist.title}
+                />
+              </div>
 
-        {/* Tracklist with Personal Annotations */}
-        <TrackList tracks={playlist.tracks} />
+              {/* Right Column: The Tracklist (sticky on desktop) */}
+              <div className="lg:col-span-5 xl:col-span-5 lg:sticky lg:top-24">
+                <TrackList tracks={playlist.tracks} />
+              </div>
+            </div>
+          ) : (
+            <div className="max-w-4xl mx-auto">
+              <TrackList tracks={playlist.tracks} />
+            </div>
+          )}
 
-        {/* Bottom Navigation */}
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 mt-12 pt-8 border-t border-white/10 flex items-center justify-between">
-          <a
-            href="/"
-            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-secondary hover:text-accent transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>All Archives</span>
-          </a>
+          {/* Bottom Navigation */}
+          <div className="mt-14 pt-8 border-t border-white/10 flex items-center justify-between">
+            <a
+              href="/"
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-secondary hover:text-accent transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>All Archives</span>
+            </a>
 
-          <a
-            href="#top"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className="text-xs font-mono text-secondary/60 hover:text-primary transition-colors"
-          >
-            ↑ Back to Top
-          </a>
+            <a
+              href="#top"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="text-xs font-mono text-secondary/60 hover:text-primary transition-colors"
+            >
+              ↑ Back to Top
+            </a>
+          </div>
         </div>
       </main>
 

@@ -45,7 +45,7 @@ export const ListeningStats: React.FC<ListeningStatsProps> = ({ stats, isLoading
   ];
 
   return (
-    <section className="max-w-5xl mx-auto px-4 sm:px-6 my-8 sm:my-12">
+    <section className="max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8 sm:my-12">
       <div className="glass-panel rounded-2xl p-5 sm:p-6 border border-white/10 shadow-glass">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-y md:divide-y-0 md:divide-x divide-white/10">
           {items.map((item, idx) => {
