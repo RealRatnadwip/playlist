@@ -23,7 +23,6 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
   const publishedCount = playlists.filter((p) => p.status === 'published').length;
   const draftCount = playlists.filter((p) => p.status === 'draft').length;
   const totalSongs = playlists.reduce((acc, p) => acc + (p.track_count || 0), 0);
-  const totalArtists = playlists.reduce((acc, p) => acc + (p.artist_count || 0), 0);
 
   return (
     <div className="space-y-8">

@@ -23,6 +23,8 @@ lerna-debug.log*
 .env
 .env.*
 !.env.example
+.spotify_token.json
+.local_db.json
 
 # OS / Editor
 .DS_Store

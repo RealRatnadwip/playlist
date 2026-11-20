@@ -3,10 +3,10 @@ import { BookOpen } from 'lucide-react';
 
 interface PlaylistStoryProps {
   storyContent: string | null | undefined;
-  playlistTitle: string;
+  playlistTitle?: string;
 }
 
-export const PlaylistStory: React.FC<PlaylistStoryProps> = ({ storyContent, playlistTitle }) => {
+export const PlaylistStory: React.FC<PlaylistStoryProps> = ({ storyContent }) => {
   if (!storyContent || storyContent.trim().length === 0) {
     return null;
   }

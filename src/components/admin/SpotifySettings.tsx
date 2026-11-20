@@ -14,8 +14,9 @@ export const SpotifySettings: React.FC<SpotifySettingsProps> = ({ status, onRefr
   const [isTesting, setIsTesting] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const redirectUri =
+  const rawUri =
     status?.redirectUri || `${window.location.origin}/api/admin/spotify/callback`;
+  const redirectUri = rawUri.replace('localhost', '127.0.0.1');
 
   const handleConnect = async () => {
     setIsConnecting(true);
@@ -178,6 +179,9 @@ export const SpotifySettings: React.FC<SpotifySettingsProps> = ({ status, onRefr
             {copied ? 'Copied!' : 'Copy'}
           </button>
         </div>
+        <p className="text-[11px] font-mono text-accent/80">
+          * Note: Spotify requires loopback IP <code>127.0.0.1</code> instead of <code>localhost</code> for local development.
+        </p>
 
         <div className="pt-2 text-xs text-secondary/80 space-y-1 font-light">
           <p>

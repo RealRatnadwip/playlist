@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { lookupSpotifyTrack } from '../../services/api';
 import { Song } from '../../types';
 import { formatDuration } from '../../utils/formatters';
-import { Search, Plus, Trash2, ArrowUp, ArrowDown, ExternalLink, Music, Loader2 } from 'lucide-react';
+import { Search, Plus, Trash2, ArrowUp, ArrowDown, Music, Loader2 } from 'lucide-react';
 
 interface TrackManagerProps {
   tracks: Song[];
   onAddSong: (songData: any) => Promise<boolean>;
   onRemoveSong: (playlistSongId: string) => Promise<boolean>;
   onReorder: (tracks: Song[]) => Promise<boolean>;
-  onUpdateNote: (playlistSongId: string, note: string) => Promise<boolean>;
+  onUpdateNote?: (playlistSongId: string, note: string) => Promise<boolean>;
 }
 
 export const TrackManager: React.FC<TrackManagerProps> = ({
@@ -17,7 +17,6 @@ export const TrackManager: React.FC<TrackManagerProps> = ({
   onAddSong,
   onRemoveSong,
   onReorder,
-  onUpdateNote,
 }) => {
   const [activeTab, setActiveTab] = useState<'spotify' | 'manual'>('spotify');
   const [spotifyQuery, setSpotifyQuery] = useState('');

@@ -237,7 +237,7 @@ export async function setPlaylistStatus(id: string, status: 'published' | 'draft
   }
 }
 
-export async function addSongToPlaylist(playlistId: string, songData: any): Promise<{ success: boolean; playlistSongId?: string; error?: string }> {
+export async function addSongToPlaylist(playlistId: string, songData: any): Promise<{ success: boolean; playlistSongId?: string; songId?: string; error?: string }> {
   try {
     const res = await fetch(`${API_BASE}/admin/playlists/${playlistId}/songs`, {
       method: 'POST',
@@ -245,7 +245,7 @@ export async function addSongToPlaylist(playlistId: string, songData: any): Prom
       body: JSON.stringify(songData),
     });
     const data = await res.json();
-    if (res.ok) return { success: true, playlistSongId: data.playlistSongId };
+    if (res.ok) return { success: true, playlistSongId: data.playlistSongId, songId: data.songId };
     return { success: false, error: data.error };
   } catch (err: any) {
     return { success: false, error: err.message };
