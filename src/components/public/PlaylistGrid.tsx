@@ -132,6 +132,13 @@ export const PlaylistGrid: React.FC<PlaylistGridProps> = ({ playlists, isLoading
             <PlaylistCard key={playlist.id} playlist={playlist} />
           ))}
         </div>
+      ) : playlists.length === 0 ? (
+        <div className="text-center py-20 rounded-2xl glass-panel p-8 border border-white/5 max-w-md mx-auto">
+          <p className="text-primary text-base font-medium mb-1">The shelves are being arranged.</p>
+          <p className="text-secondary text-xs leading-relaxed">
+            No playlists have been published to the archive yet. Check back soon or visit the admin desk to curate the first collection.
+          </p>
+        </div>
       ) : (
         <div className="text-center py-20 rounded-2xl glass-panel p-8">
           <p className="text-lg text-secondary">No playlists found for tag "{selectedTag}".</p>

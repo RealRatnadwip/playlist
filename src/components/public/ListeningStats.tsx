@@ -20,25 +20,25 @@ export const ListeningStats: React.FC<ListeningStatsProps> = ({ stats, isLoading
   const items = [
     {
       label: 'Playlists Curated',
-      value: stats?.totalPlaylists ?? 5,
+      value: stats?.totalPlaylists ?? 0,
       icon: Disc,
       detail: 'hand-crafted archives',
     },
     {
       label: 'Tracks Collected',
-      value: stats?.totalSongs ?? 12,
+      value: stats?.totalSongs ?? 0,
       icon: Music,
       detail: 'songs with context',
     },
     {
       label: 'Featured Artists',
-      value: stats?.totalArtists ?? 9,
+      value: stats?.totalArtists ?? 0,
       icon: Users,
       detail: 'across multiple eras',
     },
     {
       label: 'Archive Visits',
-      value: stats?.totalVisits ?? 140,
+      value: stats?.totalVisits ?? 0,
       icon: Eye,
       detail: 'kind visitors like you',
     },

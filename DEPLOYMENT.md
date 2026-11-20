@@ -109,8 +109,8 @@ database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 migrations_dir = "migrations"
 ```
 
-### 4. Apply Schema and Seed Data to Remote D1
-Apply Migration 0001 (Schema) and Migration 0002 (Seed Playlists & Songs):
+### 4. Apply Schema to Remote D1
+Apply Migrations (Schema, settings & clean slate):
 ```bash
 npm run d1:migrate:remote
 ```
