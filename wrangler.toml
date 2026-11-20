@@ -16,7 +16,8 @@ database_id = "f06235aa-ed84-4bc9-afc0-3a7905cc1363"
 migrations_dir = "migrations"
 
 # Optional Cloudflare R2 Bucket for custom playlist artwork uploads
-[[r2_buckets]]
-binding = "MEDIA_BUCKET"
-bucket_name = "playlist-media"
+# (Uncomment after running: npx wrangler r2 bucket create playlist-media)
+# [[r2_buckets]]
+# binding = "MEDIA_BUCKET"
+# bucket_name = "playlist-media"
 

@@ -117,6 +117,13 @@ npm run d1:migrate:remote
 
 When prompted `Are you sure you want to apply these migrations to playlist_db?`, type `y` and press Enter.
 
+### 5. (Optional) Create Cloudflare R2 Bucket for Custom Image Uploads
+If you plan to upload image files directly instead of pasting image URLs:
+```bash
+npx wrangler r2 bucket create playlist-media
+```
+And uncomment the `[[r2_buckets]]` section in `wrangler.toml`. If you only use image URLs (from Spotify, Unsplash, etc.), this step is completely optional.
+
 ---
 
 ## Step 4: Create Cloudflare Pages Project
@@ -130,6 +137,8 @@ When prompted `Are you sure you want to apply these migrations to playlist_db?`,
    - **Framework preset**: `Vite`
    - **Build command**: `npm run build`
    - **Build output directory**: `dist`
+   - **Deploy command** (if prompted by Cloudflare): `npx wrangler pages deploy dist`
+     > **Important**: If Cloudflare's dashboard has a **Deploy command** field defaulting to `npx wrangler deploy`, change it to `npx wrangler pages deploy dist` (or leave it blank for classic Pages). Running `npx wrangler deploy` causes: `[ERROR] It looks like you've run a Workers-specific command in a Pages project.`
 5. Under **Environment variables (advanced)**, add:
    - `NODE_VERSION` = `20`
 6. Click **Save and Deploy**.
@@ -257,3 +266,10 @@ In `/admin` → **Spotify**, click **Disconnect Spotify**. You can re-authorize 
 
 ### Where can I check error logs?
 In Cloudflare Dashboard → **Workers & Pages** → `playlist-ratnadwip-com` → **Deployments** → Select active deployment → **Functions** → **Real-time Logs**.
+
+### Fix: "It looks like you've run a Workers-specific command in a Pages project"
+If Cloudflare build logs show `Executing user deploy command: npx wrangler deploy` and fail with this error:
+1. In Cloudflare Dashboard, go to your project → **Settings** → **Builds & deployments** (or **Builds**).
+2. Under **Build configuration**, click **Edit configurations**.
+3. Change **Deploy command** to `npx wrangler pages deploy dist` (or leave it empty if using standard Pages).
+4. Save and retry the deployment.
