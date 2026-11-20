@@ -3,5 +3,3 @@ Allow: /
 Disallow: /admin
 Disallow: /api/admin/
 
-Sitemap: https://playlist.ratnadwip.com/sitemap.xml
-
