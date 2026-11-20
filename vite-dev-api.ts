@@ -725,6 +725,54 @@ export function viteDevApiPlugin(): Plugin {
           }
         }
 
+        // --- 6b. SPOTIFY: GET /api/admin/spotify/playlist-lookup ---
+        if (pathname === '/api/admin/spotify/playlist-lookup' && method === 'GET') {
+          const query = parsedUrl.searchParams.get('q') || '';
+          let playlistId = query.trim();
+          const match = query.match(/playlist\/([a-zA-Z0-9]{22})/);
+          if (match) playlistId = match[1];
+
+          let token: string | null = null;
+          if (refreshToken) {
+            token = await getSpotifyAccessToken(clientId, clientSecret, refreshToken);
+          }
+          if (!token && clientId && clientSecret) {
+            token = await getClientCredentialsToken(clientId, clientSecret);
+          }
+
+          if (!token) {
+            return sendJson(400, { error: 'Unable to authenticate with Spotify' });
+          }
+
+          try {
+            const plRes = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!plRes.ok) {
+              return sendJson(plRes.status, { error: 'Playlist not found on Spotify' });
+            }
+            const data: any = await plRes.json();
+            const tracks = (data.items || [])
+              .filter((item: any) => item && item.track && item.track.id)
+              .map((item: any) => {
+                const t = item.track;
+                return {
+                  spotifyTrackId: t.id,
+                  title: t.name,
+                  artist: (t.artists || []).map((a: any) => a.name).join(', '),
+                  album: t.album?.name || '',
+                  artworkUrl: t.album?.images?.[0]?.url || t.album?.images?.[1]?.url || '',
+                  durationMs: t.duration_ms || 0,
+                  spotifyUrl: t.external_urls?.spotify || `https://open.spotify.com/track/${t.id}`,
+                };
+              });
+
+            return sendJson(200, { playlistId, count: tracks.length, tracks });
+          } catch (err: any) {
+            return sendJson(500, { error: err.message });
+          }
+        }
+
         // --- 7. PLAYLISTS: GET /api/playlists ---
         if (pathname === '/api/playlists' && method === 'GET') {
           const db = getLocalDb();
@@ -877,11 +925,42 @@ export function viteDevApiPlugin(): Plugin {
           const db = getLocalDb();
           const pl = db.playlists.find((p: any) => p.id === playlistId);
           if (pl) {
+            if (!pl.tracks) pl.tracks = [];
+
+            // Batch addition
+            if (body.tracks && Array.isArray(body.tracks)) {
+              const inserted: any[] = [];
+              for (const t of body.tracks) {
+                if (!t.title || !t.artist) continue;
+                const songId = 'song-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+                const playlistSongId = 'ps-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+                const newTrack = {
+                  id: songId,
+                  spotify_track_id: t.spotifyTrackId || null,
+                  playlist_song_id: playlistSongId,
+                  title: t.title,
+                  artist: t.artist,
+                  album: t.album || '',
+                  artwork_url: t.artworkUrl || null,
+                  duration_ms: t.durationMs || 0,
+                  spotify_url: t.spotifyUrl || null,
+                  personal_note: t.personalNote || null,
+                  position: pl.tracks.length + 1,
+                };
+                pl.tracks.push(newTrack);
+                inserted.push(newTrack);
+              }
+              pl.track_count = pl.tracks.length;
+              pl.artist_count = new Set(pl.tracks.map((t: any) => t.artist)).size;
+              saveLocalDb(db);
+              return sendJson(201, { success: true, count: inserted.length, tracks: inserted });
+            }
+
             const songId = 'song-' + Date.now().toString(36);
             const playlistSongId = 'ps-' + Date.now().toString(36);
-            if (!pl.tracks) pl.tracks = [];
             pl.tracks.push({
               id: songId,
+              spotify_track_id: body.spotifyTrackId || null,
               playlist_song_id: playlistSongId,
               title: body.title,
               artist: body.artist,

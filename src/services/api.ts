@@ -322,6 +322,33 @@ export async function lookupSpotifyTrack(query: string): Promise<any> {
   throw new Error(data.error || 'Failed to lookup track');
 }
 
+export async function lookupSpotifyPlaylist(query: string): Promise<{ playlistId: string; count: number; tracks: any[] }> {
+  const res = await fetch(`${API_BASE}/admin/spotify/playlist-lookup?q=${encodeURIComponent(query)}`);
+  const data = await res.json();
+  if (res.ok) return data;
+  throw new Error(data.error || 'Failed to lookup playlist');
+}
+
+export async function addBatchSongsToPlaylist(
+  playlistId: string,
+  tracks: any[]
+): Promise<{ success: boolean; count?: number; tracks?: any[]; error?: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/admin/playlists/${playlistId}/songs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tracks }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      return { success: true, count: data.count, tracks: data.tracks };
+    }
+    return { success: false, error: data.error || 'Failed to add tracks' };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
 export async function fetchAdminSettings(): Promise<SiteSettings> {
   try {
     const res = await fetch(`${API_BASE}/admin/settings`);

@@ -11,6 +11,81 @@ export const onRequestPost: PagesFunction<Env, 'id'> = async (context) => {
 
   try {
     const body = await context.request.json<any>();
+    const now = Date.now();
+
+    // 1. Batch insert if body.tracks is provided
+    if (body.tracks && Array.isArray(body.tracks)) {
+      const maxPos = await context.env.DB
+        .prepare('SELECT MAX(position) as max_p FROM playlist_songs WHERE playlist_id = ?')
+        .bind(playlistId)
+        .first<any>();
+      let currentPos = maxPos?.max_p || 0;
+      const inserted: any[] = [];
+
+      for (const t of body.tracks) {
+        if (!t.title || !t.artist) continue;
+        currentPos++;
+
+        let songId: string;
+        if (t.spotifyTrackId) {
+          const existing = await context.env.DB
+            .prepare('SELECT id FROM songs WHERE spotify_track_id = ?')
+            .bind(t.spotifyTrackId)
+            .first<any>();
+
+          if (existing) {
+            songId = existing.id;
+          } else {
+            songId = 'song-' + generateRandomToken(8);
+            await context.env.DB
+              .prepare(`
+                INSERT INTO songs (id, spotify_track_id, title, artist, album, artwork_url, duration_ms, spotify_url, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+              `)
+              .bind(songId, t.spotifyTrackId, t.title.trim(), t.artist.trim(), t.album || null, t.artworkUrl || null, Number(t.durationMs || 0), t.spotifyUrl || null, now)
+              .run();
+          }
+        } else {
+          songId = 'song-' + generateRandomToken(8);
+          await context.env.DB
+            .prepare(`
+              INSERT INTO songs (id, spotify_track_id, title, artist, album, artwork_url, duration_ms, spotify_url, created_at)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `)
+            .bind(songId, null, t.title.trim(), t.artist.trim(), t.album || null, t.artworkUrl || null, Number(t.durationMs || 0), t.spotifyUrl || null, now)
+            .run();
+        }
+
+        const playlistSongId = 'ps-' + generateRandomToken(8);
+        await context.env.DB
+          .prepare(`
+            INSERT INTO playlist_songs (id, playlist_id, song_id, position, personal_note, created_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+          `)
+          .bind(playlistSongId, playlistId, songId, currentPos, t.personalNote || null, now)
+          .run();
+
+        inserted.push({
+          ...t,
+          id: songId,
+          playlist_song_id: playlistSongId,
+          position: currentPos,
+        });
+      }
+
+      await context.env.DB.prepare('UPDATE playlists SET updated_at = ? WHERE id = ?').bind(now, playlistId).run();
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          count: inserted.length,
+          tracks: inserted,
+        }),
+        { status: 201, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // 2. Single track insert
     const {
       spotifyTrackId,
       title,
@@ -30,7 +105,6 @@ export const onRequestPost: PagesFunction<Env, 'id'> = async (context) => {
       });
     }
 
-    const now = Date.now();
     let songId: string;
 
     // Check if song already exists in catalog

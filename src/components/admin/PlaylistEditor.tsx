@@ -6,6 +6,7 @@ import {
   updateAdminPlaylist,
   deleteAdminPlaylist,
   addSongToPlaylist,
+  addBatchSongsToPlaylist,
   removeSongFromPlaylist,
   updatePlaylistSongs,
 } from '../../services/api';
@@ -139,6 +140,21 @@ export const PlaylistEditor: React.FC<PlaylistEditorProps> = ({ playlist, onBack
       return true;
     } else {
       alert(res.error || 'Failed to add song');
+      return false;
+    }
+  };
+
+  const handleAddBatchSongs = async (batchTracks: any[]): Promise<boolean> => {
+    if (!playlist?.id) {
+      alert('Please save the playlist first before adding tracks.');
+      return false;
+    }
+    const res = await addBatchSongsToPlaylist(playlist.id, batchTracks);
+    if (res.success && res.tracks) {
+      setTracks((prev) => [...prev, ...res.tracks!]);
+      return true;
+    } else {
+      alert(res.error || 'Failed to add batch tracks');
       return false;
     }
   };
@@ -315,6 +331,7 @@ export const PlaylistEditor: React.FC<PlaylistEditorProps> = ({ playlist, onBack
             <TrackManager
               tracks={tracks}
               onAddSong={handleAddSong}
+              onAddBatchSongs={handleAddBatchSongs}
               onRemoveSong={handleRemoveSong}
               onReorder={handleReorder}
               onUpdateNote={handleUpdateNote}
