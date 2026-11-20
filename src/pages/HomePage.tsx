@@ -42,7 +42,7 @@ export const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background text-primary selection:bg-accent selection:text-background relative">
       <SEO
-        title="ratnadwip. / personal music archive & listening journal"
+        title="ratnadwip. // playlist journal"
         description="A personal music archive, listening journal and playlist collection belonging to Ratnadwip Sarkar. Real-time listening status, curated playlists, and the stories behind them."
       />
 

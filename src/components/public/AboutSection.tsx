@@ -44,7 +44,7 @@ No algorithms. No shuffle recommendations. Just the songs I return to when the w
           <div className="mt-10 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="font-display text-2xl font-bold text-primary">Ratnadwip Sarkar</p>
-              <p className="text-xs font-mono text-secondary mt-0.5">Kolkata, India</p>
+              <p className="text-xs font-mono text-secondary mt-0.5">the guy who curates & creates playlists</p>
             </div>
 
             <a
