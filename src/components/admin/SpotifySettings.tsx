@@ -12,11 +12,11 @@ export const SpotifySettings: React.FC<SpotifySettingsProps> = ({ status, onRefr
   const [isConnecting, setIsConnecting] = useState(false);
   const [testResult, setTestResult] = useState<any>(null);
   const [isTesting, setIsTesting] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copiedLocal, setCopiedLocal] = useState(false);
+  const [copiedProd, setCopiedProd] = useState(false);
 
-  const rawUri =
-    status?.redirectUri || `${window.location.origin}/api/admin/spotify/callback`;
-  const redirectUri = rawUri.replace('localhost', '127.0.0.1');
+  const localUri = `http://127.0.0.1:3000/api/admin/spotify/callback`;
+  const prodUri = `https://playlist.ratnadwip.com/api/admin/spotify/callback`;
 
   const handleConnect = async () => {
     setIsConnecting(true);
@@ -53,12 +53,6 @@ export const SpotifySettings: React.FC<SpotifySettingsProps> = ({ status, onRefr
     } finally {
       setIsTesting(false);
     }
-  };
-
-  const handleCopyRedirect = () => {
-    navigator.clipboard.writeText(redirectUri);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -167,21 +161,50 @@ export const SpotifySettings: React.FC<SpotifySettingsProps> = ({ status, onRefr
           >
             Spotify Developer Dashboard <ExternalLink className="w-3 h-3 inline" />
           </a>{' '}
-          and add this exact Redirect URI to your Spotify app settings:
+          and add these exact Redirect URIs to your Spotify app settings (under <strong>Settings → Redirect URIs</strong>):
         </p>
 
-        <div className="flex items-center gap-2 bg-surface-elevated p-3 rounded-xl border border-white/10">
-          <code className="text-xs font-mono text-primary flex-1 break-all">{redirectUri}</code>
-          <button
-            onClick={handleCopyRedirect}
-            className="px-3 py-1 rounded bg-white/10 hover:bg-white/15 text-xs font-mono text-primary"
-          >
-            {copied ? 'Copied!' : 'Copy'}
-          </button>
+        {/* Localhost URI */}
+        <div>
+          <label className="block text-xs font-mono text-secondary mb-1">
+            Local Development URI (Spotify disallows "localhost", use 127.0.0.1):
+          </label>
+          <div className="flex items-center gap-2 bg-surface-elevated p-3 rounded-xl border border-white/10">
+            <code className="text-xs font-mono text-primary flex-1 break-all">{localUri}</code>
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard.writeText(localUri);
+                setCopiedLocal(true);
+                setTimeout(() => setCopiedLocal(false), 2000);
+              }}
+              className="px-3 py-1 rounded bg-white/10 hover:bg-white/15 text-xs font-mono text-primary"
+            >
+              {copiedLocal ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
         </div>
-        <p className="text-[11px] font-mono text-accent/80">
-          * Note: Spotify requires loopback IP <code>127.0.0.1</code> instead of <code>localhost</code> for local development.
-        </p>
+
+        {/* Production URI */}
+        <div>
+          <label className="block text-xs font-mono text-secondary mb-1">
+            Production URI:
+          </label>
+          <div className="flex items-center gap-2 bg-surface-elevated p-3 rounded-xl border border-white/10">
+            <code className="text-xs font-mono text-primary flex-1 break-all">{prodUri}</code>
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard.writeText(prodUri);
+                setCopiedProd(true);
+                setTimeout(() => setCopiedProd(false), 2000);
+              }}
+              className="px-3 py-1 rounded bg-white/10 hover:bg-white/15 text-xs font-mono text-primary"
+            >
+              {copiedProd ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+        </div>
 
         <div className="pt-2 text-xs text-secondary/80 space-y-1 font-light">
           <p>

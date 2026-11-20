@@ -431,7 +431,9 @@ export function viteDevApiPlugin(): Plugin {
         const rawHost = req.headers.host || '127.0.0.1:3000';
         // Spotify Developer Dashboard disallows "localhost" - loopback IP "127.0.0.1" is required
         const safeHost = rawHost.replace(/^localhost/, '127.0.0.1');
-        const localRedirectUri = `http://${safeHost}/api/admin/spotify/callback`;
+        const localRedirectUri = env.SPOTIFY_REDIRECT_URI && env.SPOTIFY_REDIRECT_URI.includes('127.0.0.1')
+          ? env.SPOTIFY_REDIRECT_URI
+          : `http://${safeHost}/api/admin/spotify/callback`;
 
         const sendJson = (statusCode: number, data: any) => {
           res.statusCode = statusCode;
@@ -594,6 +596,8 @@ export function viteDevApiPlugin(): Plugin {
           if (!clientId) {
             return sendJson(400, { error: 'SPOTIFY_CLIENT_ID not found in .env' });
           }
+
+          console.log('[Spotify Dev API] Connecting Spotify with redirect_uri:', localRedirectUri);
 
           const scopes = [
             'user-read-currently-playing',

@@ -3,12 +3,10 @@ compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "dist"
 
-# Environment variables
+# Public environment variables (DO NOT put secrets or credentials here)
 [vars]
 ENVIRONMENT = "production"
 SITE_URL = "https://playlist.ratnadwip.com"
-SPOTIFY_CLIENT_ID = "replace-with-spotify-client-id"
-SPOTIFY_REDIRECT_URI = "https://playlist.ratnadwip.com/api/admin/spotify/callback"
 
 # Cloudflare D1 Database binding
 [[d1_databases]]
